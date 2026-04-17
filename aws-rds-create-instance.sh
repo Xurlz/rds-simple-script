@@ -1,7 +1,11 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
+##
+# @param $1 DRY_RUN - Dont call the external resources (`aws` command) if is
+# set
+##
 main() {
-  create_instance
+  if [ -z "${1+set}" ]; then create_instance; fi
 }
 
 create_instance() {
@@ -23,11 +27,29 @@ create_instance() {
 }
 
 rds_master_username() {
-  aws --region sa-east-1 secretsmanager get-secret-value --secret-id rds/postgres/master-password | jq '.SecretString' | sed 's/\\//g' | cut -c2-56 | jq -r '.username'
+  set -uo pipefail
+  aws --region sa-east-1 secretsmanager get-secret-value --secret-id rds/postgres/master-password | jq -r '.SecretString' | sed 's/\\//g' | jq -r '.username' 
 }
 
 rds_master_password() {
-  aws --region sa-east-1 secretsmanager get-secret-value --secret-id rds/postgres/master-password | jq '.SecretString' | sed 's/\\//g' | cut -c2-56 | jq -r '.password'
+  set -uo pipefail
+  aws --region sa-east-1 secretsmanager get-secret-value --secret-id rds/postgres/master-password | jq -r '.SecretString' | sed 's/\\//g' | jq -r '.password'
 }
 
-main
+# It script was not called with `.` or `source`
+if [[ -n "${BASH_SOURCE+set}" ]];then
+  if [[ -n "$BASH_SOURCE" ]]; then
+    # Executes the main function external resources if `DRY_RUN` variable is set
+    main $DRY_RUN
+  fi
+fi
+
+# if [[ -n ${ZSH_SUBSHELL+set} ]];then
+#   echo "$ZSH_SUBSHELL"
+#   if [[ "$ZSH_SUBSHELL" = "0" ]]; then echo main; fi
+# fi
+# [ -v ZSH_SUBSHELL ] && [ "$ZSH_SUBSHELL" = "0" ] && echo main
+# if [ -z "$BASH_SOURCE" ] || [ "$ZSH_SUBSHELL" = "0" ]; then
+#   echo main
+# fi
+

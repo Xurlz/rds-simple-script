@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# AWS_STUB_EXPIRED=1 -> Simulate expired session
+# AWS_STUB_SECRET    -> raw json string for SecretString value
+
+aws() {
+  local args="$@"
+
+  if echo $args | grep -q 'secretsmanager get-secret-value'; then
+    if [ "${AWS_STUB_EXPIRED:-}" = "1" ];then
+      printf "\nYour session has expired. Please reauthenticate using 'aws login'.\n" >&2
+      return 2
+    fi
+
+    local secret
+    secret=${AWS_STUB_SECRET:-'{\"username\":\"foo\", \"password\":\"teapot\" }'}
+# "$secret"
+    printf '{
+  "SecretString": "%s"
+}\n' "$secret"
+
+    return 0
+
+  fi
+
+  printf 'aws stub called: %s\n' "$args" >&2
+  return 0
+}
+
+aws "$@"
+
