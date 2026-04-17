@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
 
 main() {
-  create-instance
+  create_instance
 }
 
-create-instance() {
+create_instance() {
   aws --region sa-east-1 rds create-db-instance \
      --db-instance-identifier database-1 \
      --db-instance-class db.t4g.micro \
