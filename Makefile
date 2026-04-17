@@ -1,0 +1,4 @@
+test:
+	shellspec
+
+.PHONY: test
