@@ -1,6 +1,7 @@
 Describe 'getopts use'
   setup() {
     TEMP_DIR="$(mktemp -d)" || exit
+    cd $TEMP_DIR
   }
 
   teardown() {
@@ -11,7 +12,6 @@ Describe 'getopts use'
   After teardown
 
   It 'can get a help long option'
-    cd $TEMP_DIR
 
     cat <<-"EOL" > ./foobar.sh
 		#!/usr/bin/env bash
@@ -25,6 +25,6 @@ Describe 'getopts use'
 		When call ./foobar.sh --foo
 
 		The output should eq '--foo'
-    
+
   End
 End
