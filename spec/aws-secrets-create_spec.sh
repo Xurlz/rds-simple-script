@@ -5,7 +5,26 @@ Describe 'aws-secrets-create.sh'
 
   Include './aws-secrets-create.sh'
 
-  It 'test execution with expired login'
+  It 'returns error without --name parameter'
+    When call create_ghcr_secret
+
+    # WARN: Beware the Heredoc indentation. It's using tabs instead spaces,
+    # otherwise it should break the string
+    The stderr should equal "`cat <<-EOL
+		aws: [ERROR]: An error occurred (ParamValidation): the following arguments are required: --name
+		
+		usage: aws [options] <command> <subcommand> [<subcommand> ...] [parameters]
+		To see help text, you can run:
+		
+		  aws help
+		  aws <command> help
+		  aws <command> <subcommand> help
+		EOL`"
+
+		The status should be failure
+	End
+
+  xIt 'test execution with expired login'
     export AWS_STUB_EXPIRED=1
     When call create_ghcr_secret
 
