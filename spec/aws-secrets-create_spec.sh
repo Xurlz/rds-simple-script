@@ -11,8 +11,11 @@ Describe 'aws-secrets-create.sh'
 
     # INFO: Below line with `<<-EOL`, it's using tabs instead spaces
     The stderr should equal "`cat <<-EOL
-		Your session has expired. Please reauthenticate using 'aws login'
+
+		Your session has expired. Please reauthenticate using 'aws login'.
 		EOL
     `"
+
+    The status should be failure
   End
 End
