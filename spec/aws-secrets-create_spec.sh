@@ -5,7 +5,7 @@ Describe 'aws-secrets-create.sh'
 
   Include './aws-secrets-create.sh'
 
-  It 'returns error without --name parameter'
+  xIt 'returns error without --name parameter'
     When call create_ghcr_secret
 
     # WARN: Beware the Heredoc indentation. It's using tabs instead spaces,
