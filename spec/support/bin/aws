@@ -17,7 +17,10 @@ aws() {
 }\n' "$secret"
 
     return 0
+  fi
 
+  if echo $args | grep -q 'secretsmanager create-secret'; then
+    expired_check ${AWS_STUB_EXPIRED} || return $?
   fi
 
   printf 'aws stub called: %s\n' "$args" >&2
