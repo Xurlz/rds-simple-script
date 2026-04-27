@@ -7,10 +7,7 @@ aws() {
   local args="$@"
 
   if echo $args | grep -q 'secretsmanager get-secret-value'; then
-    if [ "${AWS_STUB_EXPIRED:-}" = "1" ];then
-      printf "\nYour session has expired. Please reauthenticate using 'aws login'.\n" >&2
-      return 2
-    fi
+    expired_check ${AWS_STUB_EXPIRED} || return $?
 
     local secret
     secret=${AWS_STUB_SECRET:-'{\"username\":\"foo\", \"password\":\"teapot\" }'}
@@ -25,6 +22,13 @@ aws() {
 
   printf 'aws stub called: %s\n' "$args" >&2
   return 0
+}
+
+expired_check() {
+  if [ "${1:-}" = "1" ];then
+    printf "\nYour session has expired. Please reauthenticate using 'aws login'.\n" >&2
+    return 2
+  fi
 }
 
 aws "$@"
