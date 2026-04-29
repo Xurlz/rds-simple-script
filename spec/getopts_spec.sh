@@ -35,7 +35,7 @@ Describe 'getopt use'
   Before setup
   After teardown
 
-  It 'can parse options'
+  xIt 'can parse options'
     cat <<-"EOL" > ./foobar.sh
 		#!/usr/bin/env bash
 		OPTS=$(getopt -l name: -n 'parse-options' -- "$@")

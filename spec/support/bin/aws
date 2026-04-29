@@ -19,6 +19,18 @@ aws() {
     return 0
   fi
 
+  if echo $args | grep -q 'secretsmanager list-secrets'; then
+    expired_check ${AWS_STUB_EXPIRED} || return $?
+
+    echo "`cat <<-EOL
+		{
+		    "SecretList": []
+		}
+		EOL`"
+
+	  return 0
+	fi
+
   if echo $args | grep -q 'secretsmanager create-secret'; then
     expired_check ${AWS_STUB_EXPIRED} || return $?
   fi

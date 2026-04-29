@@ -38,3 +38,19 @@ Describe 'aws-secrets-create.sh'
     The status should be failure
   End
 End
+
+Describe 'aws stub'
+
+  It 'can run stub list secrets'
+    When call aws --region sa-east-1 secretsmanager list-secrets
+
+    expected() { %text
+      #|{
+      #|    "SecretList": []
+      #|}
+    }
+
+    The output should eq "`expected`"
+  End
+End
+

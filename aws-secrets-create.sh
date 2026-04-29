@@ -21,8 +21,13 @@ main() {
 }
 
 create_ghcr_secret() {
-  aws --region sa-east-1 secretsmanager create-secret
+  aws --region sa-east-1 secretsmanager create-secret \
+    --name rds/postgres/master-password
+    --secret-string "{\"username\": \"postgres\","`gen_password`"}"
 }
 
+gen_password() {
+  tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' </dev/urandom | head -c 16; echo
+}
 
 main_safe_wrap $DRY_RUN
